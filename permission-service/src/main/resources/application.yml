@@ -1,0 +1,37 @@
+server:
+  port: 8082
+
+spring:
+  config:
+    import: "optional:nacos:"
+  application:
+    name: permission-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:192.168.200.128}:${MYSQL_PORT:3306}/${MYSQL_DB:easy_permission}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root}
+  data:
+    redis:
+      host: ${REDIS_HOST:192.168.200.128}
+      port: ${REDIS_PORT:6379}
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:192.168.200.128:8848}
+      config:
+        enabled: false
+        server-addr: ${NACOS_ADDR:192.168.200.128:8848}
+        file-extension: yaml
+        import-check:
+          enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+# 说明：权限模型将在阶段二补全，这里先保证服务可启动

@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  nacos:
+    image: nacos/nacos-server:v2.3.0
+    container_name: easy-nacos
+    environment:
+      - MODE=standalone
+    ports:
+      - "8848:8848"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://192.168.200.128:8848/nacos/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql:
+    image: mysql:8.0
+    container_name: easy-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=easy_auth
+    ports:
+      - "3306:3306"
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+
+  redis:
+    image: redis:7.2
+    container_name: easy-redis
+    ports:
+      - "6379:6379"
+
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: easy-prometheus
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - "192.168.200.128:host-gateway"
+
+  grafana:
+    image: grafana/grafana:10.4.1
+    container_name: easy-grafana
+    ports:
+      - "3000:3000"
+
+  sentinel-dashboard:
+    image: bladex/sentinel-dashboard:1.8.7
+    container_name: easy-sentinel-dashboard
+    ports:
+      - "8858:8858"
