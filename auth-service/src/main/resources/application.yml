@@ -7,9 +7,14 @@ spring:
   application:
     name: auth-service
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:192.168.200.128}:${MYSQL_PORT:3306}/${MYSQL_DB:easy_auth}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://${MYSQL_HOST:192.168.200.128}:${MYSQL_PORT:3306}/${AUTH_MYSQL_DB:easy_auth}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:root}
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
   data:
     redis:
       host: ${REDIS_HOST:192.168.200.128}
@@ -35,3 +40,16 @@ management:
       show-details: always
 
 # 说明：认证逻辑将在阶段二完成，这里先保证服务可启动
+
+app:
+  auth:
+    jwt-secret: ${JWT_SECRET:easy-auth-secret-change-me-please-please-please}
+    access-token-expire-seconds: 7200
+    refresh-token-expire-seconds: 604800
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto

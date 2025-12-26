@@ -24,13 +24,23 @@ spring:
         - id: auth-service
           uri: lb://auth-service
           predicates:
-            - Path=/api/auth/**
+            - Path=/auth-service/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
+        - id: permission-service
+          uri: lb://permission-service
+          predicates:
+            - Path=/permission-service/**
+          filters:
+            - StripPrefix=1
     sentinel:
       transport:
         dashboard: ${SENTINEL_DASHBOARD:192.168.200.128:8858}
       eager: true
+  data:
+    redis:
+      host: ${REDIS_HOST:192.168.200.128}
+      port: ${REDIS_PORT:6379}
 
 management:
   endpoints:
@@ -41,4 +51,15 @@ management:
     health:
       show-details: always
 
-# 说明：网关仅做基础路由与限流示例，业务鉴权将在后续阶段完善
+# 说明：网关已接入 JWT 校验与权限服务调用，后续可扩展灰度与更细粒度策略
+
+app:
+  gateway:
+    auth:
+      jwt-secret: ${JWT_SECRET:easy-auth-secret-change-me-please-please-please}
+      permission-service-url: ${PERMISSION_SERVICE_URL:http://permission-service}
+      whitelist-paths:
+        - /**/api/auth/**
+        - /swagger-ui/**
+        - /v3/api-docs/**
+        - /actuator/**

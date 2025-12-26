@@ -7,9 +7,14 @@ spring:
   application:
     name: permission-service
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:192.168.200.128}:${MYSQL_PORT:3306}/${MYSQL_DB:easy_permission}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://${MYSQL_HOST:192.168.200.128}:${MYSQL_PORT:3306}/${PERMISSION_MYSQL_DB:easy_permission}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:root}
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
   data:
     redis:
       host: ${REDIS_HOST:192.168.200.128}
@@ -35,3 +40,14 @@ management:
       show-details: always
 
 # 说明：权限模型将在阶段二补全，这里先保证服务可启动
+
+app:
+  permission:
+    cache-ttl-seconds: 300
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto

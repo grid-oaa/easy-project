@@ -22,6 +22,11 @@ public class ApiResponse<T> {
         return new ApiResponse<>(errorCode.code(), errorCode.message(), null);
     }
 
+    public static <T> ApiResponse<T> fail(ErrorCode errorCode, String message) {
+        String finalMessage = (message == null || message.isBlank()) ? errorCode.message() : message;
+        return new ApiResponse<>(errorCode.code(), finalMessage, null);
+    }
+
     public int getCode() {
         return code;
     }
